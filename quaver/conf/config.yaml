@@ -1,0 +1,21 @@
+name: "eduSystem"
+mode: "dev"
+port: 8081
+version: "v0.0.1"
+start_time: "2023-01-30"
+machine_id: 1
+url: "http://192.168.0.103:8080/" #服务器地址和nginx代理端口
+auth:
+  jwt_expire: 8768 # token过期时间
+log:
+  level: "debug"
+  filename: "quaver.log"
+  max_size: 200
+  max_age: 30
+  max_backups: 7
+mysql:
+  host: "127.0.0.1"
+  port: 3306
+  user: "root"
+  password: "root1234"
+  dbname: "quaver"
