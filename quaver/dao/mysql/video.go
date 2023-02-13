@@ -4,6 +4,7 @@ import (
 	"errors"
 	"gorm.io/gorm"
 	"quaver/models"
+	"quaver/settings"
 )
 
 // Feed 视频流接口
@@ -15,6 +16,8 @@ func Feed(latestTime string, currentUserID ...int64) (videoList *[]models.Video,
 	}
 
 	for k, video := range videos {
+		videos[k].PlayUrl = settings.Conf.Url + videos[k].PlayUrl
+		videos[k].CoverUrl = settings.Conf.Url + videos[k].CoverUrl
 		user := new(models.User)
 		if err = db.Select("id", "name", "follow_count", "follower_count").Where("id=?", video.UserID).Find(user).Error; err != nil {
 			return nil, err

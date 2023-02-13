@@ -9,7 +9,6 @@ import (
 	"os"
 	"quaver/dao/mysql"
 	"quaver/models"
-	"quaver/settings"
 	"strings"
 	"time"
 )
@@ -53,8 +52,8 @@ func Publish(currentUserID int64, title, filePath, finalName string) (err error)
 		UserID:        currentUserID,
 		Title:         title,
 		CreateTime:    time.Now().Format("2006-01-02 15:04:05"), // 本地当前时间
-		PlayUrl:       settings.Conf.Url + "public/" + finalName,
-		CoverUrl:      settings.Conf.Url + "public/" + imgNames[0] + ".jpg",
+		PlayUrl:       "/public/" + finalName,
+		CoverUrl:      "/public/" + imgNames[0] + ".jpg",
 		FavoriteCount: 0,
 		CommentCount:  0,
 		IsFavorite:    false,
