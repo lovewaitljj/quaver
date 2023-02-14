@@ -35,3 +35,10 @@ type ParamPublish struct {
 	Token string `form:"token" binding:"required"`
 	Title string `form:"title" binding:"required"`
 }
+
+// ParamFavorite 赞操作请求参数
+type ParamFavorite struct {
+	Token       string `form:"token" binding:"required"`
+	Video_id    string `form:"video_id " binding:"required"`
+	Action_type string `form:"Action_type" binding:"required"` //1-点赞，2-取消点赞
+}
