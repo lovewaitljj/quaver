@@ -31,7 +31,7 @@ func Feed(c *gin.Context) {
 		return
 	}
 	//2. 业务处理
-	var videoList *[]models.Video
+	var videoList []*models.Video
 	if p.Token == "" {
 		videoList, err = logic.Feed(p.LatestTime)
 	} else {
@@ -47,12 +47,11 @@ func Feed(c *gin.Context) {
 			return
 		}
 	}
-	list := *videoList
 	latestTime := time.Now()
 	// 解析字符串格式的时间
-	if len(list) > 0 {
+	if len(videoList) > 0 {
 		loc, _ := time.LoadLocation("Local")
-		latestTime, _ = time.ParseInLocation("2006-01-02T15:04:05Z", list[0].CreateTime, loc)
+		latestTime, _ = time.ParseInLocation("2006-01-02T15:04:05Z", videoList[0].CreateTime, loc)
 		//latestTime, _ = time.Parse("2006-01-02T15:04:05Z", list[0].CreateTime) // 会加8小时
 	}
 	// 3. 返回响应
@@ -62,7 +61,7 @@ func Feed(c *gin.Context) {
 			StatusMsg:  "success",
 		},
 		NextTime:  latestTime.Unix(),
-		VideoList: list,
+		VideoList: videoList,
 	})
 }
 
@@ -101,7 +100,7 @@ func PublishList(c *gin.Context) {
 			StatusCode: 0,
 			StatusMsg:  "success",
 		},
-		VideoList: *publishList,
+		VideoList: publishList,
 	})
 }
 

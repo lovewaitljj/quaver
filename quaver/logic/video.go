@@ -14,7 +14,7 @@ import (
 )
 
 // Feed 视频流接口
-func Feed(latestTime string, currentUserID ...int64) (videoList *[]models.Video, err error) {
+func Feed(latestTime string, currentUserID ...int64) (videoList []*models.Video, err error) {
 	//if len(latestTime) != 0 {
 	//	latest, err := strconv.ParseInt(latestTime, 10, 64)
 	//	if err != nil {
@@ -34,7 +34,7 @@ func Feed(latestTime string, currentUserID ...int64) (videoList *[]models.Video,
 }
 
 // PublishList 发布列表
-func PublishList(currentUserID, userID int64) (publishList *[]models.Video, err error) {
+func PublishList(currentUserID, userID int64) (publishList []*models.Video, err error) {
 	if currentUserID == userID {
 		return mysql.PublishList(currentUserID)
 	}

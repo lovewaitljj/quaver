@@ -26,6 +26,9 @@ func SetRouter() *gin.Engine {
 		apiRouter.POST("/favorite/action/", controller.Favorite) // 赞操作
 		//apiRouter.POST("/favorite/action/", controller.FavoriteList) //喜欢列表
 
+		apiRouter.POST("/relation/action/", controller.RelationAction) // 关注操作
+		apiRouter.GET("/relation/follow/list/", controller.FollowList) // 关注列表
+
 	}
 	r.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{

@@ -18,13 +18,13 @@ type ParamUserInfo struct {
 	Token  string `form:"token" binding:"required"`
 }
 
-// ParamFeed 获取用户消息请求参数
+// ParamFeed 视频流请求参数
 type ParamFeed struct {
 	LatestTime string `form:"latest_time"`
 	Token      string `form:"token"`
 }
 
-// ParamPublishList 获取用户消息请求参数
+// ParamPublishList 发布列表请求参数
 type ParamPublishList struct {
 	UserID int64  `form:"user_id" binding:"required"`
 	Token  string `form:"token" binding:"required"`
@@ -41,4 +41,17 @@ type ParamFavorite struct {
 	Token       string `form:"token" binding:"required"`
 	Video_id    int64  `form:"video_id " binding:"required"`
 	Action_type string `form:"Action_type"` //1-点赞，2-取消点赞
+}
+
+// ParamRelationAction 关注操作请求参数
+type ParamRelationAction struct {
+	Token      string `form:"token" binding:"required"`
+	ToUserId   int64  `form:"to_user_id" binding:"required"`
+	ActionType int32  `form:"action_type" binding:"required"`
+}
+
+// ParamFollowList 关注操作请求参数
+type ParamFollowList struct {
+	UserId int64  `form:"user_id" binding:"required"`
+	Token  string `form:"token" binding:"required"`
 }

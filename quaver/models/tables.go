@@ -16,7 +16,7 @@ type Follow struct {
 	ID       int64 `json:"id"`
 	UserID   int64 `json:"user_id"`
 	FollowID int64 `json:"follow_id"`
-	IsFollow int8  `json:"is_follow"`
+	IsFollow int32 `json:"is_follow"`
 }
 
 // Video 视频信息
