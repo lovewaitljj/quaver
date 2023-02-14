@@ -102,3 +102,23 @@ func PublishList(userID ...int64) (publishList *[]models.Video, err error) {
 func Publish(video *models.Video) (err error) {
 	return db.Create(video).Error
 }
+
+// DoFavorite 点赞操作
+func DoFavorite(userID int64, p *models.Like) (err error) {
+	follow := new(models.Like)
+	//查询该likes表中videosid对应的点赞人有无此id
+	if errors.Is(db.Where("video_id = ? and user_id = ?", p.VideoID, userID).First(&follow).Error, gorm.ErrRecordNotFound) {
+		//如果没点过，则新加一个字段：
+		db.Model(&models.Video{}).Where("id = ?", p.VideoID).Update("favorite_count", gorm.Expr("favorite_count + ? ", 1))
+		return db.Create(&p).Error
+	}
+	//如果点过，则进行改变
+	if follow.IsLike == 1 {
+		db.Model(&models.Video{}).Where("id = ?", p.VideoID).Update("favorite_count", gorm.Expr("favorite_count - ? ", 1))
+		db.Model(&models.Like{}).Where("video_id = ? and user_id = ?", p.VideoID, userID).Update("is_like", 2)
+		return
+	}
+	db.Model(&models.Video{}).Where("id = ?", p.VideoID).Update("favorite_count", gorm.Expr("favorite_count + ? ", 1))
+	db.Model(&models.Like{}).Where("video_id = ? and user_id = ?", p.VideoID, userID).Update("is_like", 1)
+	return
+}

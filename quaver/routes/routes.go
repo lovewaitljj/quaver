@@ -14,17 +14,16 @@ func SetRouter() *gin.Engine {
 	//r.Use(middlewares.Cors()) // 后端解决跨域问题
 	apiRouter := r.Group("/douyin")
 	{
-		apiRouter.POST("/user/register/", controller.Register)   // 用户注册
-		apiRouter.POST("/user/login/", controller.Login)         // 用户登录
-		apiRouter.GET("/feed/", controller.Feed)                 // 视频流接口
-		apiRouter.POST("/favorite/action/", controller.Favorite) // 赞操作
+		apiRouter.POST("/user/register/", controller.Register) // 用户注册
+		apiRouter.POST("/user/login/", controller.Login)       // 用户登录
+		apiRouter.GET("/feed/", controller.Feed)               // 视频流接口
 	}
 	apiRouter.Use(middlewares.JWTAuthMiddleware()) // 应用JWT认证中间件
 	{
-		apiRouter.GET("/user/", controller.UserInfo)            // 用户信息
-		apiRouter.GET("/publish/list/", controller.PublishList) // 发布列表
-		apiRouter.POST("/publish/action/", controller.Publish)  // 发布视频
-		//apiRouter.POST("/favorite/action/", controller.Favorite) // 赞操作
+		apiRouter.GET("/user/", controller.UserInfo)             // 用户信息
+		apiRouter.GET("/publish/list/", controller.PublishList)  // 发布列表
+		apiRouter.POST("/publish/action/", controller.Publish)   // 发布视频
+		apiRouter.POST("/favorite/action/", controller.Favorite) // 赞操作
 		//apiRouter.POST("/favorite/action/", controller.FavoriteList) //喜欢列表
 
 	}

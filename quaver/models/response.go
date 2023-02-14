@@ -31,3 +31,8 @@ type ResponsePublishList struct {
 	Response
 	VideoList []Video `json:"video_list"`
 }
+
+type ResponseFavoriteList struct {
+	Response
+	//VideoList []Video `json:"video_list"`
+}
