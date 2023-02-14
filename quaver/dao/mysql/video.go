@@ -8,16 +8,16 @@ import (
 )
 
 // Feed 视频流接口
-func Feed(latestTime string, currentUserID ...int64) (videoList *[]models.Video, err error) {
-	videos := make([]models.Video, 30)
+func Feed(latestTime string, currentUserID ...int64) (videoList []*models.Video, err error) {
+	videoList = make([]*models.Video, 30)
 	// 从满足条件的id往前查找
-	if err = db.Order("id desc").Where("create_time < ?", latestTime).Limit(30).Find(&videos).Error; err != nil {
+	if err = db.Order("id desc").Where("create_time < ?", latestTime).Limit(30).Find(&videoList).Error; err != nil {
 		return nil, err
 	}
 
-	for k, video := range videos {
-		videos[k].PlayUrl = settings.Conf.Url + videos[k].PlayUrl
-		videos[k].CoverUrl = settings.Conf.Url + videos[k].CoverUrl
+	for k, video := range videoList {
+		videoList[k].PlayUrl = settings.Conf.Url + videoList[k].PlayUrl
+		videoList[k].CoverUrl = settings.Conf.Url + videoList[k].CoverUrl
 		user := new(models.User)
 		if err = db.Select("id", "name", "follow_count", "follower_count").Where("id=?", video.UserID).Find(user).Error; err != nil {
 			return nil, err
@@ -37,12 +37,11 @@ func Feed(latestTime string, currentUserID ...int64) (videoList *[]models.Video,
 				return nil, err
 			}
 			if like {
-				videos[k].IsFavorite = true
+				videoList[k].IsFavorite = true
 			}
 		}
-		videos[k].Author = *user // 这里不能直接用video.Author = *user,因为video是值拷贝...
+		videoList[k].Author = *user // 这里不能直接用video.Author = *user,因为video是值拷贝...
 	}
-	videoList = &videos
 	return videoList, err
 }
 
@@ -59,25 +58,25 @@ func isLike(currentUserID int64, videoID int64) (followed bool, err error) {
 }
 
 // PublishList 发布列表
-func PublishList(userID ...int64) (publishList *[]models.Video, err error) {
-	videos := make([]models.Video, 30)
+func PublishList(userID ...int64) (publishList []*models.Video, err error) {
+	publishList = make([]*models.Video, 30)
 	user := new(models.User)
-	if err = db.Where("user_id=?", userID[0]).Find(&videos).Error; err != nil {
+	if err = db.Where("user_id=?", userID[0]).Find(&publishList).Error; err != nil {
 		return nil, err
 	}
 	if err = db.Select("id", "name", "follow_count", "follower_count").Where("id=?", userID[0]).Find(user).Error; err != nil {
 		return nil, err
 	}
 	if len(userID) == 1 { // 查询自己的发布列表
-		for k, video := range videos { // 遍历currentUser是否点赞该视频
+		for k, video := range publishList { // 遍历currentUser是否点赞该视频
 			if like, err := isLike(userID[0], video.ID); err != nil {
 				return nil, err
 			} else if like {
-				videos[k].IsFavorite = true
+				publishList[k].IsFavorite = true
 			}
-			videos[k].CoverUrl = settings.Conf.Url + videos[k].CoverUrl
-			videos[k].PlayUrl = settings.Conf.Url + videos[k].PlayUrl
-			videos[k].Author = *user
+			publishList[k].CoverUrl = settings.Conf.Url + publishList[k].CoverUrl
+			publishList[k].PlayUrl = settings.Conf.Url + publishList[k].PlayUrl
+			publishList[k].Author = *user
 		}
 	} else { // 别人的发布列表
 		// 当前用户是否关注传来的user_id参数
@@ -87,18 +86,17 @@ func PublishList(userID ...int64) (publishList *[]models.Video, err error) {
 			user.IsFollow = true
 		}
 
-		for k, video := range videos { // 遍历currentUser是否点赞该视频
+		for k, video := range publishList { // 遍历currentUser是否点赞该视频
 			if like, err := isLike(userID[1], video.ID); err != nil {
 				return nil, err
 			} else if like {
-				videos[k].IsFavorite = true
+				publishList[k].IsFavorite = true
 			}
-			videos[k].CoverUrl = settings.Conf.Url + videos[k].CoverUrl
-			videos[k].PlayUrl = settings.Conf.Url + videos[k].PlayUrl
-			videos[k].Author = *user
+			publishList[k].CoverUrl = settings.Conf.Url + publishList[k].CoverUrl
+			publishList[k].PlayUrl = settings.Conf.Url + publishList[k].PlayUrl
+			publishList[k].Author = *user
 		}
 	}
-	publishList = &videos
 	return publishList, err
 }
 

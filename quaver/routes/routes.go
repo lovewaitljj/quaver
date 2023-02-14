@@ -25,6 +25,7 @@ func SetRouter() *gin.Engine {
 		apiRouter.POST("/publish/action/", controller.Publish)  // 发布视频
 
 		apiRouter.POST("/relation/action/", controller.RelationAction) // 关注操作
+		apiRouter.GET("/relation/follow/list/", controller.FollowList) // 关注列表
 
 	}
 	r.NoRoute(func(c *gin.Context) {

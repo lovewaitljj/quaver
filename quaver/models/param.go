@@ -42,3 +42,9 @@ type ParamRelationAction struct {
 	ToUserId   int64  `form:"to_user_id" binding:"required"`
 	ActionType int32  `form:"action_type" binding:"required"`
 }
+
+// ParamFollowList 关注操作请求参数
+type ParamFollowList struct {
+	UserId int64  `form:"user_id" binding:"required"`
+	Token  string `form:"token" binding:"required"`
+}

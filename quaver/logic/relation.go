@@ -14,3 +14,8 @@ func RelationAction(currentUserID int64, p *models.ParamRelationAction) (err err
 
 	return mysql.RelationAction(follow)
 }
+
+// FollowList 关注列表
+func FollowList(userID int64) (userList []*models.User, err error) {
+	return mysql.FollowList(userID)
+}

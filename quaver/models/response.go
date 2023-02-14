@@ -24,10 +24,16 @@ type ResponseUserInfo struct {
 
 type ResponseFeed struct {
 	Response
-	NextTime  int64   `json:"next_time"`
-	VideoList []Video `json:"video_list"`
+	NextTime  int64    `json:"next_time"`
+	VideoList []*Video `json:"video_list"`
 }
+
 type ResponsePublishList struct {
 	Response
-	VideoList []Video `json:"video_list"`
+	VideoList []*Video `json:"video_list"`
+}
+
+type ResponseFollowList struct {
+	Response
+	UserList []*User `json:"user_list"`
 }
