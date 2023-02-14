@@ -28,7 +28,7 @@ func Feed(latestTime string, currentUserID ...int64) (videoList *[]models.Video,
 			if err != nil {
 				return nil, err
 			}
-			if followed {
+			if followed || user.ID == currentUserID[0] {
 				user.IsFollow = true
 			}
 			// 判断currentUser是否点赞该视频
@@ -75,6 +75,8 @@ func PublishList(userID ...int64) (publishList *[]models.Video, err error) {
 			} else if like {
 				videos[k].IsFavorite = true
 			}
+			videos[k].CoverUrl = settings.Conf.Url + videos[k].CoverUrl
+			videos[k].PlayUrl = settings.Conf.Url + videos[k].PlayUrl
 			videos[k].Author = *user
 		}
 	} else { // 别人的发布列表
@@ -91,6 +93,8 @@ func PublishList(userID ...int64) (publishList *[]models.Video, err error) {
 			} else if like {
 				videos[k].IsFavorite = true
 			}
+			videos[k].CoverUrl = settings.Conf.Url + videos[k].CoverUrl
+			videos[k].PlayUrl = settings.Conf.Url + videos[k].PlayUrl
 			videos[k].Author = *user
 		}
 	}
