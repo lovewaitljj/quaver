@@ -38,5 +38,5 @@ type Like struct {
 	ID      int64 `json:"id"`
 	VideoID int64 `json:"video_id"`
 	UserID  int64 `json:"user_id"`
-	IsLike  int64 `json:"is_like"`
+	IsLike  int64 `json:"is_like" gorm:"default:1"`
 }

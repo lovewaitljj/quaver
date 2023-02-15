@@ -92,3 +92,24 @@ func getSnapshot(videoPath, snapshotPath string, frameNum int) (snapshotName str
 	snapshotName = names[len(names)-1] + ".png"
 	return
 }
+
+// DoFavorite 点赞视频
+func DoFavorite(userID int64, p *models.ParamFavorite) error {
+	////构建点赞实例
+	likes := &models.Like{
+		VideoID: p.Video_id,
+		UserID:  userID,
+	}
+
+	//保存进数据库
+	return mysql.DoFavorite(userID, likes)
+
+}
+
+// FavoriteList 喜欢列表
+func FavoriteList(currentUserID, userID int64) (favoriteList []*models.Video, err error) {
+	if currentUserID == userID {
+		return mysql.FavoriteList(currentUserID)
+	}
+	return mysql.FavoriteList(userID, currentUserID)
+}

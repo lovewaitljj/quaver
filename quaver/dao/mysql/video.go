@@ -74,6 +74,7 @@ func PublishList(userID ...int64) (publishList []*models.Video, err error) {
 			} else if like {
 				publishList[k].IsFavorite = true
 			}
+
 			publishList[k].CoverUrl = settings.Conf.Url + publishList[k].CoverUrl
 			publishList[k].PlayUrl = settings.Conf.Url + publishList[k].PlayUrl
 			publishList[k].Author = *user
@@ -103,4 +104,55 @@ func PublishList(userID ...int64) (publishList []*models.Video, err error) {
 // Publish 发布视频
 func Publish(video *models.Video) (err error) {
 	return db.Create(video).Error
+}
+
+// DoFavorite 点赞操作
+func DoFavorite(userID int64, p *models.Like) (err error) {
+	follow := new(models.Like)
+	//查询该likes表中videosid对应的点赞人有无此id
+	if errors.Is(db.Where("video_id = ? and user_id = ?", p.VideoID, userID).First(&follow).Error, gorm.ErrRecordNotFound) {
+		//如果没点过，则新加一个字段：
+		db.Model(&models.Video{}).Where("id = ?", p.VideoID).Update("favorite_count", gorm.Expr("favorite_count + ? ", 1))
+		return db.Create(&p).Error
+	}
+	//如果点过，则进行改变
+	if follow.IsLike == 1 {
+		db.Model(&models.Video{}).Where("id = ?", p.VideoID).Update("favorite_count", gorm.Expr("favorite_count - ? ", 1))
+		db.Model(&models.Like{}).Where("video_id = ? and user_id = ?", p.VideoID, userID).Update("is_like", 2)
+		return
+	}
+	db.Model(&models.Video{}).Where("id = ?", p.VideoID).Update("favorite_count", gorm.Expr("favorite_count + ? ", 1))
+	db.Model(&models.Like{}).Where("video_id = ? and user_id = ?", p.VideoID, userID).Update("is_like", 1)
+	return
+}
+
+// FavoriteList 喜欢列表
+func FavoriteList(userID ...int64) (favoriteList []*models.Video, err error) {
+	favoriteList = make([]*models.Video, 30)
+
+	//1.连接like和video表查出video相关信息
+	if err := db.Raw("SELECT v.id,v.user_id,v.title,v.play_url,v.cover_url,v.favorite_count,v.comment_count"+
+		" FROM videos v LEFT JOIN likes l ON v.id=l.video_id where l.user_id=?", userID[0]).Scan(&favoriteList).Error; err != nil {
+		return nil, err
+	}
+	for k, video := range favoriteList {
+		//2.根据查出来的视频列表的作者去user表查出作者相关信息
+		user := new(models.User)
+		if err := db.Select("id", "name", "follow_count", "follower_count").Where("id = ?", video.UserID).Find(&user).Error; err != nil {
+			return nil, err
+		}
+		//3.判断currentid是否关注视频作者
+		if followed, err := isFollow(user.ID, userID[0]); err != nil {
+			return nil, err
+		} else if followed {
+			user.IsFollow = true
+		}
+		favoriteList[k].CoverUrl = settings.Conf.Url + favoriteList[k].CoverUrl
+		favoriteList[k].PlayUrl = settings.Conf.Url + favoriteList[k].PlayUrl
+		favoriteList[k].Author = *user
+		favoriteList[k].IsFavorite = true
+	}
+
+	return favoriteList, err
+
 }

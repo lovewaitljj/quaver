@@ -37,3 +37,8 @@ type ResponseFollowList struct {
 	Response
 	UserList []*User `json:"user_list"`
 }
+
+type ResponseFavoriteList struct {
+	Response
+	VideoList []Video `json:"video_list"`
+}

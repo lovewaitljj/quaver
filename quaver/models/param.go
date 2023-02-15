@@ -36,6 +36,13 @@ type ParamPublish struct {
 	Title string `form:"title" binding:"required"`
 }
 
+// ParamFavorite 赞操作请求参数
+type ParamFavorite struct {
+	Token       string `form:"token" binding:"required"`
+	Video_id    int64  `form:"video_id " binding:"required"`
+	Action_type string `form:"Action_type"` //1-点赞，2-取消点赞
+}
+
 // ParamRelationAction 关注操作请求参数
 type ParamRelationAction struct {
 	Token      string `form:"token" binding:"required"`
@@ -46,5 +53,11 @@ type ParamRelationAction struct {
 // ParamFollowList 关注操作请求参数
 type ParamFollowList struct {
 	UserId int64  `form:"user_id" binding:"required"`
+	Token  string `form:"token" binding:"required"`
+}
+
+// ParamFavoriteList 发布列表请求参数
+type ParamFavoriteList struct {
+	UserID int64  `form:"user_id" binding:"required"`
 	Token  string `form:"token" binding:"required"`
 }
