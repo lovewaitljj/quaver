@@ -157,3 +157,42 @@ func Publish(c *gin.Context) {
 		},
 	})
 }
+
+// FavoriteList 发布列表
+func FavoriteList(c *gin.Context) {
+	p := new(models.ParamFavoriteList)
+	// 1. 获取参数和校验参数
+	if err := c.ShouldBind(p); err != nil {
+		// 请求参数有误，直接返回响应
+		zap.L().Error("FavoriteList with invalid param", zap.Error(err))
+		// 判断err是不是validator.ValidationErrors 类型
+		errs, ok := err.(validator.ValidationErrors)
+		if !ok {
+			ResponseError(c, CodeInvalidParam)
+			return
+		}
+		ResponseErrorWithMsg(c, CodeInvalidParam, removeTopStruct(errs.Translate(trans)))
+		return
+	}
+	// 2. 业务处理
+	currentUserID, err := getCurrentUserID(c)
+	if err != nil {
+		zap.L().Error("getCurrentUserID failed", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	favoriteList, err := logic.FavoriteList(currentUserID, p.UserID)
+	if err != nil {
+		zap.L().Error("logic.PublishList failed", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	// 3. 返回响应
+	c.JSON(http.StatusOK, models.ResponseFavoriteList{
+		Response: models.Response{
+			StatusCode: 0,
+			StatusMsg:  "success",
+		},
+		VideoList: favoriteList,
+	})
+}

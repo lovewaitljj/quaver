@@ -105,3 +105,11 @@ func DoFavorite(userID int64, p *models.ParamFavorite) error {
 	return mysql.DoFavorite(userID, likes)
 
 }
+
+// FavoriteList 喜欢列表
+func FavoriteList(currentUserID, userID int64) (favoriteList []*models.Video, err error) {
+	if currentUserID == userID {
+		return mysql.FavoriteList(currentUserID)
+	}
+	return mysql.FavoriteList(userID, currentUserID)
+}

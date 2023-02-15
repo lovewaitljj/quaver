@@ -55,3 +55,9 @@ type ParamFollowList struct {
 	UserId int64  `form:"user_id" binding:"required"`
 	Token  string `form:"token" binding:"required"`
 }
+
+// ParamFavoriteList 发布列表请求参数
+type ParamFavoriteList struct {
+	UserID int64  `form:"user_id" binding:"required"`
+	Token  string `form:"token" binding:"required"`
+}
