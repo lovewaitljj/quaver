@@ -40,5 +40,5 @@ type ResponseFollowList struct {
 
 type ResponseFavoriteList struct {
 	Response
-	VideoList []Video `json:"video_list"`
+	VideoList []*Video `json:"video_list"`
 }

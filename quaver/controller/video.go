@@ -183,7 +183,7 @@ func FavoriteList(c *gin.Context) {
 	}
 	favoriteList, err := logic.FavoriteList(currentUserID, p.UserID)
 	if err != nil {
-		zap.L().Error("logic.PublishList failed", zap.Error(err))
+		zap.L().Error("logic.FavoriteList failed", zap.Error(err))
 		ResponseError(c, CodeServerBusy)
 		return
 	}
