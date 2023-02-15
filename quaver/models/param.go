@@ -38,9 +38,9 @@ type ParamPublish struct {
 
 // ParamFavorite 赞操作请求参数
 type ParamFavorite struct {
-	Token       string `form:"token" binding:"required"`
-	Video_id    int64  `form:"video_id " binding:"required"`
-	Action_type string `form:"Action_type"` //1-点赞，2-取消点赞
+	Token      string `form:"token" binding:"required"`
+	VideoID    int64  `form:"video_id" binding:"required"`
+	ActionType int32  `form:"action_type" binding:"required"` //1-点赞，2-取消点赞
 }
 
 // ParamRelationAction 关注操作请求参数

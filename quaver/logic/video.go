@@ -97,7 +97,7 @@ func getSnapshot(videoPath, snapshotPath string, frameNum int) (snapshotName str
 func DoFavorite(userID int64, p *models.ParamFavorite) error {
 	////构建点赞实例
 	likes := &models.Like{
-		VideoID: p.Video_id,
+		VideoID: p.VideoID,
 		UserID:  userID,
 	}
 

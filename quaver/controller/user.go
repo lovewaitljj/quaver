@@ -168,10 +168,8 @@ func Favorite(c *gin.Context) {
 		return
 	}
 	// 3. 返回响应
-	c.JSON(http.StatusOK, models.ResponseFavoriteList{
-		Response: models.Response{
-			StatusCode: 0,
-			StatusMsg:  "success",
-		},
+	c.JSON(http.StatusOK, models.Response{
+		StatusCode: 0,
+		StatusMsg:  "success",
 	})
 }
