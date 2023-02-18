@@ -61,3 +61,12 @@ type ParamFavoriteList struct {
 	UserID int64  `form:"user_id" binding:"required"`
 	Token  string `form:"token" binding:"required"`
 }
+
+// ParamComment 评论请求参数
+type ParamComment struct {
+	Token       string `form:"token" binding:"required"`
+	VideoID     int64  `form:"video_id" binding:"required"`
+	ActionType  int32  `form:"action_type" binding:"required"` //1-发布评论，2-删除评论
+	CommentText string `form:"comment_text"`                   //发布评论时使用
+	Comment_id  int64  `form:"comment_id"`                     //删除评论时使用
+}

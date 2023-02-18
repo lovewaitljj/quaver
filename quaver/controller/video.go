@@ -158,7 +158,7 @@ func Publish(c *gin.Context) {
 	})
 }
 
-// FavoriteList 发布列表
+// FavoriteList 喜欢列表
 func FavoriteList(c *gin.Context) {
 	p := new(models.ParamFavoriteList)
 	// 1. 获取参数和校验参数
@@ -195,4 +195,93 @@ func FavoriteList(c *gin.Context) {
 		},
 		VideoList: favoriteList,
 	})
+}
+
+// Favorite 赞操作
+func Favorite(c *gin.Context) {
+	p := new(models.ParamFavorite)
+	// 1. 获取参数和校验参数
+	if err := c.ShouldBind(p); err != nil {
+		// 请求参数有误，直接返回响应
+		zap.L().Error("favorite with invalid param", zap.Error(err))
+		// 判断err是不是validator.ValidationErrors 类型
+		errs, ok := err.(validator.ValidationErrors)
+		if !ok {
+			ResponseError(c, CodeInvalidParam)
+			return
+		}
+		ResponseErrorWithMsg(c, CodeInvalidParam, removeTopStruct(errs.Translate(trans)))
+		return
+	}
+	//2. 业务处理
+	//需要知道谁给某帖点赞
+	currentUserID, err := getCurrentUserID(c)
+	if err != nil {
+		zap.L().Error("getCurrentUserID failed", zap.Error(err))
+		ResponseError(c, CodeNeedLogin)
+		return
+	}
+	err = logic.DoFavorite(currentUserID, p)
+	if err != nil {
+		zap.L().Error("logic.DoFavorite failed", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	// 3. 返回响应
+	c.JSON(http.StatusOK, models.Response{
+		StatusCode: 0,
+		StatusMsg:  "success",
+	})
+}
+
+// Comment 评论操作
+func Comment(c *gin.Context) {
+	p := new(models.ParamComment)
+	// 1. 获取参数和校验参数
+	if err := c.ShouldBind(p); err != nil {
+		// 请求参数有误，直接返回响应
+		zap.L().Error("comment with invalid param", zap.Error(err))
+		// 判断err是不是validator.ValidationErrors 类型
+		errs, ok := err.(validator.ValidationErrors)
+		if !ok {
+			ResponseError(c, CodeInvalidParam)
+			return
+		}
+		ResponseErrorWithMsg(c, CodeInvalidParam, removeTopStruct(errs.Translate(trans)))
+		return
+	}
+	//2. 业务处理
+	//需要知道谁给哪个视频评论
+	currentUserID, err := getCurrentUserID(c)
+	if err != nil {
+		zap.L().Error("getCurrentUserID failed", zap.Error(err))
+		ResponseError(c, CodeNeedLogin)
+		return
+	}
+	comment, err := logic.DoComment(currentUserID, p)
+	if err != nil {
+		zap.L().Error("logic.DoComment failed", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	// 3. 返回响应
+	//删除评论返回
+	if comment == nil {
+		c.JSON(http.StatusOK, models.ResponseDelComment{
+			Response: models.Response{
+				StatusCode: 0,
+				StatusMsg:  "success",
+			},
+		})
+		//发布评论返回
+	} else {
+		c.JSON(http.StatusOK, models.ResponseComment{
+			Response: models.Response{
+				StatusCode: 0,
+				StatusMsg:  "success",
+			},
+			Comment: *comment,
+		})
+	}
+
 }

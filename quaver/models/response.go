@@ -42,3 +42,12 @@ type ResponseFavoriteList struct {
 	Response
 	VideoList []*Video `json:"video_list"`
 }
+
+type ResponseComment struct {
+	Response
+	Comment `json:"comment"`
+}
+type ResponseDelComment struct {
+	Response
+	Comment `json:"-"`
+}

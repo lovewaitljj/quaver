@@ -153,3 +153,19 @@ func FavoriteList(userID ...int64) (favoriteList []*models.Video, err error) {
 	}
 	return favoriteList, err
 }
+
+// DoComment 发布评论
+func DoComment(comment *models.Comment) (user *models.User, err error) {
+	err = db.Create(&comment).Error
+	if err != nil {
+		return nil, err
+	}
+	//获取用户信息
+	db.Select("id,name,follow_count,follower_count").Where("id=?", comment.UserID).First(&user)
+	return
+}
+
+//DelComment 删除评论
+func DelComment(commentId int64) error {
+	return db.Delete(&models.Comment{}, commentId).Error
+}

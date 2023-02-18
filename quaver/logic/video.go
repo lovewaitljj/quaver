@@ -95,7 +95,7 @@ func getSnapshot(videoPath, snapshotPath string, frameNum int) (snapshotName str
 
 // DoFavorite 点赞视频
 func DoFavorite(userID int64, p *models.ParamFavorite) error {
-	////构建点赞实例
+	//构建点赞实例
 	likes := &models.Like{
 		VideoID: p.VideoID,
 		UserID:  userID,
@@ -112,4 +112,29 @@ func FavoriteList(currentUserID, userID int64) (favoriteList []*models.Video, er
 		return mysql.FavoriteList(currentUserID)
 	}
 	return mysql.FavoriteList(userID, currentUserID)
+}
+
+// DoComment 评论操作
+func DoComment(userID int64, p *models.ParamComment) (comment *models.Comment, err error) {
+	if p.ActionType == 1 {
+		//发布评论
+		comment = &models.Comment{
+			VideoID:    p.VideoID,
+			UserID:     userID,
+			Content:    p.CommentText,
+			CreateDate: time.Now().Format("2006-01-02 15:04:05"), // 本地当前时间
+		}
+		user, err := mysql.DoComment(comment)
+		if err != nil {
+			return nil, err
+		}
+		comment.Author = *user
+		return comment, nil
+	}
+	//删除评论
+	if err := mysql.DelComment(p.Comment_id); err != nil {
+		return nil, err
+	}
+	return nil, nil
+
 }

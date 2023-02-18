@@ -40,3 +40,13 @@ type Like struct {
 	UserID  int64 `json:"user_id"`
 	IsLike  int64 `json:"is_like" gorm:"default:1"`
 }
+
+//Comment 视频评论消息
+type Comment struct {
+	ID         int64  `json:"id"`
+	VideoID    int64  `json:"video_id"`
+	UserID     int64  `json:"user_id"`
+	Author     User   `json:"author" gorm:"-"`
+	Content    string `json:"content"`
+	CreateDate string `json:"create_date"`
+}
