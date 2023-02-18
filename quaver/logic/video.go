@@ -138,3 +138,11 @@ func DoComment(userID int64, p *models.ParamComment) (comment *models.Comment, e
 	return nil, nil
 
 }
+
+// CommentList 评论列表
+func CommentList(currentUserID, videoId int64) (commentList []*models.Comment, err error) {
+	if commentList, err = mysql.CommentList(currentUserID, videoId); err != nil {
+		return nil, err
+	}
+	return
+}

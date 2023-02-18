@@ -51,3 +51,8 @@ type ResponseDelComment struct {
 	Response
 	Comment `json:"-"`
 }
+
+type ResponseCommentList struct {
+	Response
+	CommentList []*Comment `json:"comment_List"`
+}

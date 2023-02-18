@@ -70,3 +70,9 @@ type ParamComment struct {
 	CommentText string `form:"comment_text"`                   //发布评论时使用
 	Comment_id  int64  `form:"comment_id"`                     //删除评论时使用
 }
+
+// ParamCommentList 评论列表参数
+type ParamCommentList struct {
+	Token   string `form:"token" binding:"required"`
+	VideoID int64  `form:"video_id" binding:"required"`
+}

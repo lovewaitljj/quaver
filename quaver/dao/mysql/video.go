@@ -169,3 +169,23 @@ func DoComment(comment *models.Comment) (user *models.User, err error) {
 func DelComment(commentId int64) error {
 	return db.Delete(&models.Comment{}, commentId).Error
 }
+
+// CommentList 评论列表
+func CommentList(currentUserID, videoId int64) (commentList []*models.Comment, err error) {
+	if err = db.Where("video_id=?", videoId).Find(&commentList).Error; err != nil {
+		return nil, err
+	}
+	//遍历commentlist来查找用户信息
+	for _, comment := range commentList {
+		user := new(models.User)
+		db.Select("id", "name", "follow_count", "follower_count").Where("id=?", comment.UserID).First(&user)
+		if followed, err := isFollow(comment.UserID, currentUserID); err != nil {
+			return nil, err
+		} else if followed {
+			user.IsFollow = true
+		}
+		comment.Author = *user
+
+	}
+	return
+}
