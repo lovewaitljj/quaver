@@ -29,6 +29,9 @@ func SetRouter() *gin.Engine {
 		apiRouter.GET("/relation/follow/list/", controller.FollowList) // 关注列表
 		apiRouter.POST("/comment/action/", controller.Comment)         // 评论操作
 		apiRouter.GET("/comment/list/", controller.CommentList)        //评论列表
+		apiRouter.POST("/relation/action/", controller.Relation) //关系操作
+		apiRouter.GET("/relation/follow/list/", controller.ListManger)
+		apiRouter.GET("/relation/follower/list/", controller.UserFans) //用户粉丝列表
 	}
 	r.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
