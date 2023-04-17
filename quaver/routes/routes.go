@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"quaver/controller"
@@ -34,6 +35,9 @@ func SetRouter() *gin.Engine {
 		//apiRouter.GET("/relation/follow/list/", controller.ListManger)
 		apiRouter.GET("/relation/follower/list/", controller.UserFans) //用户粉丝列表
 	}
+
+	//注册pprof相关路由
+	pprof.Register(r)
 	r.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"msg": "404",
