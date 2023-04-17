@@ -14,6 +14,7 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 		// Authorization: Bearer xxxxxxx.xxx.xxx  / X-TOKEN: xxx.xxx.xx
 		// 这里的具体实现方式要依据你的实际业务情况决定
 		//authHeader := c.Request.Header.Get("Authorization")
+		//我们设计到查询参数放在URI
 		authHeader := c.Query("token")
 		if authHeader == "" {
 			controller.ResponseError(c, controller.CodeNeedLogin)

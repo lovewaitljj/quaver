@@ -6,11 +6,12 @@ import (
 	"quaver/controller"
 	"quaver/logger"
 	"quaver/middlewares"
+	"time"
 )
 
 func SetRouter() *gin.Engine {
 	r := gin.Default()
-	r.Use(logger.GinLogger(), logger.GinRecovery(true))
+	r.Use(logger.GinLogger(), logger.GinRecovery(true), middlewares.RateLimitMiddleware(2*time.Second, 1))
 	//r.Use(middlewares.Cors()) // 后端解决跨域问题
 	apiRouter := r.Group("/douyin")
 	{
@@ -29,8 +30,8 @@ func SetRouter() *gin.Engine {
 		apiRouter.GET("/relation/follow/list/", controller.FollowList) // 关注列表
 		apiRouter.POST("/comment/action/", controller.Comment)         // 评论操作
 		apiRouter.GET("/comment/list/", controller.CommentList)        //评论列表
-		apiRouter.POST("/relation/action/", controller.Relation) //关系操作
-		apiRouter.GET("/relation/follow/list/", controller.ListManger)
+		//apiRouter.POST("/relation/action/", controller.Relation) //关系操作
+		//apiRouter.GET("/relation/follow/list/", controller.ListManger)
 		apiRouter.GET("/relation/follower/list/", controller.UserFans) //用户粉丝列表
 	}
 	r.NoRoute(func(c *gin.Context) {

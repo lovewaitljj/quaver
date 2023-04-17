@@ -10,7 +10,7 @@ const CtxUserIDKey = "userID"
 
 var ErrorUserNotLogin = errors.New("用户未登录")
 
-// getCurrentUserID 获取当前登录的用户ID
+// getCurrentUserID 服务端从token中获取当前登录的用户ID
 func getCurrentUserID(c *gin.Context) (userID int64, err error) {
 	uid, ok := c.Get(CtxUserIDKey)
 	if !ok {
