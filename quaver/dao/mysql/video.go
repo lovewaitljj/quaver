@@ -5,12 +5,14 @@ import (
 	"gorm.io/gorm"
 	"quaver/models"
 	"quaver/settings"
+	"sync"
 )
 
 // Feed 视频流接口
 func Feed(latestTime string, currentUserID ...int64) (videoList []*models.Video, err error) {
 	videoList = make([]*models.Video, 30)
 	// 从满足条件的id往前查找
+	//select * from videos where create_time < latestTime order by id desc;
 	if err = db.Order("id desc").Where("create_time < ?", latestTime).Limit(30).Find(&videoList).Error; err != nil {
 		return nil, err
 	}
@@ -108,11 +110,14 @@ func Publish(video *models.Video) (err error) {
 
 // DoFavorite 点赞操作
 func DoFavorite(userID int64, p *models.Like) (err error) {
+	mutex := sync.Mutex{}
+	mutex.Lock()
+	defer mutex.Unlock()
 	follow := new(models.Like)
 	//查询该likes表中videosId对应的点赞人有无此id
 	if errors.Is(db.Where("video_id = ? and user_id = ?", p.VideoID, userID).First(&follow).Error, gorm.ErrRecordNotFound) {
 		//如果没点过，则新加一个字段：
-		db.Model(&models.Video{}).Where("id = ?", p.VideoID).Update("favorite_count", gorm.Expr("favorite_count + ? ", 1))
+		//db.Model(&models.Video{}).Where("id = ?", p.VideoID).Update("favorite_count", gorm.Expr("favorite_count + ? ", 1))
 		return db.Create(&p).Error
 	}
 	//如果点过，则进行改变
@@ -165,7 +170,7 @@ func DoComment(comment *models.Comment) (user *models.User, err error) {
 	return
 }
 
-//DelComment 删除评论
+// DelComment 删除评论
 func DelComment(commentId int64) error {
 	return db.Delete(&models.Comment{}, commentId).Error
 }

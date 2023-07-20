@@ -39,7 +39,15 @@ func Register(c *gin.Context) {
 		return
 	} else {
 		// 3. 返回响应
-		c.JSON(http.StatusOK, models.ResponseSignUp{
+		//c.JSON(http.StatusOK, models.ResponseSignUp{
+		//	Response: models.Response{
+		//		StatusCode: 0,
+		//		StatusMsg:  "success",
+		//	},
+		//	UserId: user.ID,
+		//	Token:  user.Token,
+		//})
+		ResponseSuccess(c, models.ResponseSignUp{
 			Response: models.Response{
 				StatusCode: 0,
 				StatusMsg:  "success",

@@ -44,7 +44,8 @@ func PublishList(currentUserID, userID int64) (publishList []*models.Video, err 
 // Publish 发布视频
 func Publish(currentUserID int64, title, filePath, finalName string) (err error) {
 	imgNames := strings.Split(finalName, ".")
-	// 生成封面
+	//生成封面
+	//            ./public/19_hhh.mp4, ./public/19_hhh,   1
 	if _, err = getSnapshot(filePath, "./public/"+imgNames[0], 1); err != nil {
 		return
 	}
@@ -52,8 +53,8 @@ func Publish(currentUserID int64, title, filePath, finalName string) (err error)
 		UserID:        currentUserID,
 		Title:         title,
 		CreateTime:    time.Now().Format("2006-01-02 15:04:05"), // 本地当前时间
-		PlayUrl:       "/public/" + finalName,
-		CoverUrl:      "/public/" + imgNames[0] + ".jpg",
+		PlayUrl:       "/public/" + finalName,                   //   /public/19_hhh.mp4
+		CoverUrl:      "/public/" + imgNames[0] + ".jpg",        // /public/19_hhh.jpg
 		FavoriteCount: 0,
 		CommentCount:  0,
 		IsFavorite:    false,
@@ -62,6 +63,8 @@ func Publish(currentUserID int64, title, filePath, finalName string) (err error)
 	return mysql.Publish(video)
 }
 
+//	./public/19_hhh.mp4, ./public/19_hhh,   1
+//
 // getSnapshot 生成封面
 func getSnapshot(videoPath, snapshotPath string, frameNum int) (snapshotName string, err error) {
 
@@ -72,7 +75,7 @@ func getSnapshot(videoPath, snapshotPath string, frameNum int) (snapshotName str
 		WithOutput(buf, os.Stdout).
 		Run()
 	if err != nil {
-		log.Fatal("生成缩略图失败：", err)
+		log.Print("err = ", err)
 		return "", err
 	}
 
@@ -88,7 +91,7 @@ func getSnapshot(videoPath, snapshotPath string, frameNum int) (snapshotName str
 		return "", err
 	}
 
-	names := strings.Split(snapshotPath, "\\")
+	names := strings.Split(snapshotPath, "/")
 	snapshotName = names[len(names)-1] + ".png"
 	return
 }

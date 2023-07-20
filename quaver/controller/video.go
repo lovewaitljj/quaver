@@ -55,7 +55,7 @@ func Feed(c *gin.Context) {
 		//latestTime, _ = time.Parse("2006-01-02T15:04:05Z", list[0].CreateTime) // 会加8小时
 	}
 	// 3. 返回响应
-	c.JSON(http.StatusOK, models.ResponseFeed{
+	ResponseSuccess(c, models.ResponseFeed{
 		Response: models.Response{
 			StatusCode: 0,
 			StatusMsg:  "success",
@@ -134,9 +134,9 @@ func Publish(c *gin.Context) {
 		return
 	}
 	// 生成文件名和保存路径
-	filename := filepath.Base(data.Filename)
-	finalName := fmt.Sprintf("%d_%s", currentUserID, filename)
-	saveFile := filepath.Join("./public/", finalName)
+	filename := filepath.Base(data.Filename)                   //hhh.mp4
+	finalName := fmt.Sprintf("%d_%s", currentUserID, filename) //19_hhh.mp4
+	saveFile := filepath.Join("./public/", finalName)          //  ./public/19_hhh.mp4
 	// 保存文件
 	if err = c.SaveUploadedFile(data, saveFile); err != nil {
 		zap.L().Error("SaveUploadedFile failed", zap.Error(err))

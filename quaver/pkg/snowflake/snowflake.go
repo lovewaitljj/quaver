@@ -6,6 +6,7 @@ import (
 	sf "github.com/bwmarrin/snowflake"
 )
 
+//雪花算法
 var node *sf.Node
 
 func Init(startTime string, machineID int64) (err error) {
